@@ -41,14 +41,14 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "collection_library::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-collection_library-Debug-aab5cc7f6ee42888ec58.json",
+					"jsonFile" : "target-collection_library-Debug-4a9d6150df197c81fcbd.json",
 					"name" : "collection_library",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 0,
 					"id" : "collection_test::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-collection_test-Debug-04aefd7b937b817f8b46.json",
+					"jsonFile" : "target-collection_test-Debug-023bfb56784e3f8afe27.json",
 					"name" : "collection_test",
 					"projectIndex" : 0
 				}

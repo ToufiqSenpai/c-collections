@@ -63,6 +63,13 @@ build CMakeFiles/collection_library.dir/src/linkedlist.c.obj: C_COMPILER__collec
   OBJECT_DIR = CMakeFiles\collection_library.dir
   OBJECT_FILE_DIR = CMakeFiles\collection_library.dir\src
 
+build CMakeFiles/collection_library.dir/src/stack.c.obj: C_COMPILER__collection_library_unscanned_Debug D$:/C/collections/src/stack.c || cmake_object_order_depends_target_collection_library
+  DEP_FILE = CMakeFiles\collection_library.dir\src\stack.c.obj.d
+  FLAGS = -g -fdiagnostics-color=always
+  INCLUDES = -ID:/C/collections/src/common.h -ID:/C/collections/src/list.h
+  OBJECT_DIR = CMakeFiles\collection_library.dir
+  OBJECT_FILE_DIR = CMakeFiles\collection_library.dir\src
+
 
 # =============================================================================
 # Link build statements for STATIC_LIBRARY target collection_library
@@ -71,7 +78,7 @@ build CMakeFiles/collection_library.dir/src/linkedlist.c.obj: C_COMPILER__collec
 #############################################
 # Link the static library libcollection_library.a
 
-build libcollection_library.a: C_STATIC_LIBRARY_LINKER__collection_library_Debug CMakeFiles/collection_library.dir/src/list.c.obj CMakeFiles/collection_library.dir/src/linkedlist.c.obj
+build libcollection_library.a: C_STATIC_LIBRARY_LINKER__collection_library_Debug CMakeFiles/collection_library.dir/src/list.c.obj CMakeFiles/collection_library.dir/src/linkedlist.c.obj CMakeFiles/collection_library.dir/src/stack.c.obj
   LANGUAGE_COMPILE_FLAGS = -g
   OBJECT_DIR = CMakeFiles\collection_library.dir
   POST_BUILD = cd .

@@ -6,7 +6,8 @@ add_library(collection_library
         src/list.c
         src/linkedlist.c
         src/linkedlist.h
-        src/linkedlist.h)
+        src/stack.c
+        src/stack.h)
 
 target_include_directories(collection_library PUBLIC src/common.h src/list.h)
 add_executable(collection_test tests/list.c)
