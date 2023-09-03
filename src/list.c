@@ -11,8 +11,7 @@
  */
 bool list_add(List *list, void *element) {
   if(list->size >= list->capacity) {
-    if(list_expand_capacity(list))
-      return false;
+    if(!list_expand_capacity(list)) return false;
   }
 
   list->elements[list->size] = element;
@@ -57,12 +56,11 @@ bool list_contains(List *list, void *element) {
 static bool list_expand_capacity(List *list) {
   void **new_elements = (void**) malloc(list->capacity * list->type_size);
 
-  if(!new_elements)
-    return false;
+  if(!new_elements) return false;
 
   list->capacity *= 2;
 
-  memcpy(new_elements, list->elements, list->size * sizeof(void*));
+  memcpy(new_elements, list->elements, list->size * list->type_size);
   free(list->elements);
 
   list->elements = new_elements;

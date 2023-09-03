@@ -16,6 +16,8 @@ void linked_list_foreach(LinkedListNode *head, void (*action)(const void*));
 void *linked_list_get(LinkedListNode *head, size_t index);
 void *linked_list_get_first(LinkedListNode *head);
 void *linked_list_get_last(LinkedListNode *head);
+ssize_t linked_list_index_of(LinkedListNode *head, void *element);
+void *linked_list_remove(LinkedListNode **head, void *element);
 void *linked_list_remove_at(LinkedListNode **head, size_t index);
 ssize_t linked_list_size(LinkedListNode *head);
 

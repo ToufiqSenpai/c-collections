@@ -32,7 +32,7 @@ bool linked_list_add(LinkedListNode **head, void *element, size_t type_size) {
 
   // After we get the end of the node, assign next node to the new node with the data.
   // If allocation memory is failed, return COLLECTION_ERR_ALLOC.
-  if((current_head->next = linked_list_create( element, type_size)) == NULL)
+  if((current_head->next = linked_list_create(element, type_size)) == NULL)
     return false;
 
   return true;
@@ -124,6 +124,26 @@ void *linked_list_get_last(LinkedListNode *head) {
     current_head = current_head->next;
 
   return current_head->element;
+}
+
+ssize_t linked_list_index_of(LinkedListNode *head, void *element) {
+  ssize_t index = 0;
+  LinkedListNode *current_head = head;
+
+  while(current_head != NULL) {
+    if(current_head->element == element) {
+      return index;
+    }
+
+    current_head = current_head->next;
+    index++;
+  }
+
+  return -1;
+}
+
+void *linked_list_remove(LinkedListNode **head, void *element) {
+
 }
 
 void *linked_list_remove_at(LinkedListNode **head, size_t index) {
