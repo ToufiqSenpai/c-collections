@@ -1,7 +1,7 @@
 #include "linkedlist.h"
 
 typedef struct LinkedListNode {
-    void *data;
+    void *element;
     LinkedListNode *next;
 } LinkedListNode;
 
@@ -13,16 +13,16 @@ typedef struct LinkedListNode {
  * @param type_size size of the data type
  * @return COLLECTION_OK if the process is success, else return COLLECTION_ERR_ALLOC if the allocation memory is error.
  */
-CollectionStatus linked_list_add(LinkedListNode **head, void *data, size_t type_size) {
+bool linked_list_add(LinkedListNode **head, void *element, size_t type_size) {
   // If the head node is null, we need to create the instance of this node.
   if(*head == NULL) {
-    LinkedListNode *new_node = NULL;
+    LinkedListNode *new_node = linked_list_create(element, type_size);
 
-    if(linked_list_create(&new_node, data, type_size) == COLLECTION_ERR_ALLOC)
-      return COLLECTION_ERR_ALLOC;
+    if(new_node == NULL)
+      return false;
 
     *head = new_node;
-    return COLLECTION_OK;
+    return true;
   }
 
   // When the next node is not null, loop the node until the next node is null.
@@ -32,10 +32,37 @@ CollectionStatus linked_list_add(LinkedListNode **head, void *data, size_t type_
 
   // After we get the end of the node, assign next node to the new node with the data.
   // If allocation memory is failed, return COLLECTION_ERR_ALLOC.
-  if(linked_list_create(&current_head->next, data, type_size) == COLLECTION_ERR_ALLOC)
-    return COLLECTION_ERR_ALLOC;
+  if((current_head->next = linked_list_create( element, type_size)) == NULL)
+    return false;
 
-  return COLLECTION_OK;
+  return true;
+}
+
+void linked_list_clear(LinkedListNode **head) {
+  LinkedListNode *current_head = *head;
+  LinkedListNode *next_node;
+
+  while(current_head != NULL) {
+    next_node = current_head->next;
+
+    free(current_head->element);
+    free(current_head);
+
+    current_head = next_node;
+  }
+
+  *head = NULL;
+}
+
+bool linked_list_contains(LinkedListNode *head, void *data) {
+  LinkedListNode *current_head = head;
+  while(current_head != NULL) {
+    if(current_head->element == data) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 /**
@@ -46,112 +73,73 @@ CollectionStatus linked_list_add(LinkedListNode **head, void *data, size_t type_
  * @param type_size size of the data type
  * @return COLLECTION_OK if the process is success, else return COLLECTION_ERR_ALLOC if the allocation memory is error.
  */
-CollectionStatus linked_list_create(LinkedListNode **node, void *data, size_t type_size) {
+LinkedListNode *linked_list_create(void *data, size_t type_size) {
   LinkedListNode *new_node = (LinkedListNode*) malloc(sizeof(LinkedListNode));
 
   if(new_node == NULL)
-    return COLLECTION_ERR_ALLOC;
+    return NULL;
 
-  new_node->data = malloc(type_size);
+  new_node->element = malloc(type_size);
   new_node->next = NULL;
 
   for(int i = 0; i < type_size; i++)
-    *(char*) (new_node->data + i) = *(char*)(data + i);
+    *(char*) (new_node->element + i) = *(char*)(data + i);
 
-  *node = new_node;
-
-  return COLLECTION_OK;
+  return new_node;
 }
 
-CollectionStatus linked_list_clear(LinkedListNode **head) {
-  LinkedListNode *current_head = *head;
-  LinkedListNode *next_node;
-
-  while(current_head != NULL) {
-    next_node = current_head->next;
-
-    free(current_head->data);
-    free(current_head);
-
-    current_head = next_node;
-  }
-
-  *head = NULL;
-
-  return COLLECTION_OK;
-}
-
-CollectionStatus linked_list_contains(LinkedListNode *head, void *data, bool *result) {
+void linked_list_foreach(LinkedListNode *head, void (*action)(const void*)) {
   LinkedListNode *current_head = head;
   while(current_head != NULL) {
-    if(current_head->data == data) {
-      *result = true;
-      return COLLECTION_OK;
-    }
-  }
-
-  *result = false;
-  return COLLECTION_ERR_NOT_FOUND;
-}
-
-CollectionStatus linked_list_foreach(LinkedListNode *head, void (*action)(const void*)) {
-  LinkedListNode *current_head = head;
-  while(current_head != NULL) {
-    action(current_head->data);
+    action(current_head->element);
     current_head = current_head->next;
   }
-
-  return COLLECTION_OK;
 }
 
-CollectionStatus linked_list_get(LinkedListNode *head, size_t index, void *out) {
+void *linked_list_get(LinkedListNode *head, size_t index) {
   LinkedListNode *current_head = head;
   size_t i = 0;
 
   while(current_head != NULL) {
     if(i == index) {
-      out == current_head->data;
-      return COLLECTION_OK;
+      return current_head->element;
     }
 
     current_head = current_head->next;
     i++;
   }
 
-  return COLLECTION_ERR_NOT_FOUND;
+  return NULL;
 }
 
-CollectionStatus linked_list_get_first(LinkedListNode *head, void *out) {
+void *linked_list_get_first(LinkedListNode *head) {
   if(head == NULL)
-    return COLLECTION_ERR_NULL_POINTER;
-  out = head->data;
-  return COLLECTION_OK;
+    return NULL;
+  return head->element;
 }
 
-CollectionStatus linked_list_get_last(LinkedListNode *head, void *out) {
+void *linked_list_get_last(LinkedListNode *head) {
   LinkedListNode *current_head = head;
   while(current_head != NULL)
     current_head = current_head->next;
 
-  out = current_head->data;
-
-  return COLLECTION_OK;
+  return current_head->element;
 }
 
-CollectionStatus linked_list_remove_at(LinkedListNode **head, size_t index) {
+void *linked_list_remove_at(LinkedListNode **head, size_t index) {
   LinkedListNode *current_head = *head;
   LinkedListNode *previous_head = NULL;
 
   if(index == 0) {
     *head = current_head->next;
+    void *removed_element = current_head->element;
 
-    free(current_head->data);
     free(current_head);
 
-    return COLLECTION_OK;
+    return removed_element;
   }
 
-  int i = 0;
+  size_t i = 0;
   while(current_head != NULL && i != index) {
     previous_head = current_head;
     current_head = current_head->next;
@@ -160,54 +148,27 @@ CollectionStatus linked_list_remove_at(LinkedListNode **head, size_t index) {
   }
 
   if(current_head == NULL) {
-    return COLLECTION_ERR_OUT_OF_BOUND;
+    return NULL;
   }
 
+  void *removed_element = current_head->element;
+
   previous_head->next = current_head->next;
-  free(current_head->data);
   free(current_head);
 
-  return COLLECTION_OK;
+  return removed_element;
 }
 
-CollectionStatus linked_list_size(LinkedListNode *head, size_t *count) {
+ssize_t linked_list_size(LinkedListNode *head) {
   LinkedListNode *current_head = head;
 
   if(current_head == NULL)
-    return COLLECTION_ERR_NULL_POINTER;
+    return -1;
 
-  size_t current_count = 0;
+  ssize_t current_count = 0;
   do
     current_count++;
   while ((current_head = current_head->next) != NULL);
 
-  *count = current_count;
-
-  return COLLECTION_OK;
-}
-
-void cb_foreach(const void *data) {
-  printf("%s ", (char*)data);
-}
-
-int main() {
-  LinkedListNode *main_node = NULL;
-
-  char str1[] = "Nilou";
-  char str2[] = "Istri";
-  char str3[] = "Gw";
-
-  linked_list_add(&main_node, str1, 6);
-  linked_list_add(&main_node, str2, 6);
-  linked_list_add(&main_node, str3, 3);
-
-  size_t size1 = 0;
-
-  linked_list_size(main_node, &size1);
-
-  printf("%zu\n", size1);
-
-  linked_list_foreach(main_node, cb_foreach);
-
-  return 0;
+  return current_count;
 }
